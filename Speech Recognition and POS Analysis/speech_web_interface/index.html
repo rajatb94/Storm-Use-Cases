@@ -1,0 +1,182 @@
+<html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Noto+Sans&subset=latin,devanagari' rel='stylesheet' type='text/css'>
+        <script src="jquery.min.js"></script>
+        
+         <script type="text/javascript">
+            var host = "ws://192.168.1.23:9999/said";
+			console.log("Host:", host);
+			
+			var s = new WebSocket(host);
+			
+			s.onopen = function (e) {
+				console.log("Socket opened.");
+                
+			};
+			
+			s.onclose = function (e) {
+				console.log("Socket closed.");
+			};
+			
+			s.onmessage = function (e) {
+				
+			};
+			
+			s.onerror = function (e) {
+				console.log("Socket error:", e);
+			};
+         
+          
+      </script>
+        
+    <style>
+    
+    #cont
+        {
+       font-size: 20px;
+            box-shadow: black 0px 0px 10px 0px;
+            font-family: 'Noto Sans', sans-serif;
+            padding: 20px;
+            color: white;
+            margin-top: 20px;
+            min-height: 400px;
+            text-align: left;
+            background-color: rgb(78, 157, 160);
+            border-radius: 30px;
+        }
+        #status
+        {
+            margin: auto;
+            width: 70px;
+            cursor: pointer;
+             
+            
+            border-radius: 35px;
+            animation: rec 1s infinite;
+        }
+        .st
+        {
+             box-shadow: none;
+        transition: all 0.5s;
+        }
+        .st:hover
+        {
+            margin: auto;
+            width: 70px;
+            box-shadow: white 0px 0px 10px 5px;
+        }
+        .animRec
+        {
+        animation: rec 1s infinite;
+            -webkit-animation: rec 1s infinite;
+        }
+        
+        .animNotRec
+        {
+       box-shadow: red 0px 0px 10px 5px;
+        }
+        
+        @-webkit-keyframes rec {
+    0%   {box-shadow: white 0px 0px 0px 0px;}
+    50%  {box-shadow: white 0px 0px 10px 10px;}
+            100%   {box-shadow: white 0px 0px 0px 0px;}
+}
+
+/* Standard syntax */
+@keyframes rec {
+    0%   {box-shadow: white 0px 0px 0px 0px;}
+    50%  {box-shadow: white 0px 0px 10px 10px;}
+            100%   {box-shadow: white 0px 0px 0px 0px;}
+}
+        
+
+        #supcont
+        {
+        position:absolute;
+            width: 50%;
+            height: 50%;
+            text-align: center;
+            top: 15%;
+            left: 25%;
+        }
+        </style>    
+    </head>
+<body style="background-color: #c9c9c9;">
+    
+    
+    <div id="supcont">
+        <img id="status" src="record.png" class="st" onClick="doIt()"/>
+        
+<div id="cont"><span id="final"></span><span id="intrim" style="font-size: 14px; color: #e0dede; height: 27px; padding-top: 3px;"></span></div>  
+        </div>
+    
+    <script>
+        var final=document.getElementById("final");
+        var intrim=document.getElementById("intrim");
+        var final_transcript="";
+        var chk=0;
+  var recognition = new webkitSpeechRecognition();
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.lang = "en-us";
+
+recognition.onresult = function (e) {
+    var interim_transcript = '';
+    
+        if (typeof(e.results) == 'undefined') {
+            reset();
+            return;
+        }
+        for (var i = e.resultIndex; i < e.results.length; ++i) {
+            var val = e.results[i][0].transcript;
+            if (e.results[i].isFinal) {
+                hitServer(val.trim());
+                final_transcript += " " + val;
+            } else {
+                interim_transcript += " " + val;
+                
+            }
+        }
+    intrim.innerHTML = format(capitalize(interim_transcript));
+    var fnl=format(capitalize(final_transcript));
+        final.innerHTML = fnl;
+   
+    }
+
+function format(s) {
+    return s.replace(/\n/g, '<br>');
+}
+        function capitalize(s) {
+    return s.replace(/\S/, function(m) {
+        return m.toUpperCase();
+    });
+}
+        function doIt()
+        {
+        if(chk==0)
+        {
+recognition.start();
+            //$("#status").css("box-shadow","none");
+            $("#status").addClass("animRec");
+             $("#status").removeClass("st");
+            
+        chk=1;
+        }
+            else
+            {
+                recognition.stop();
+                $("#status").removeClass("animRec");
+                
+                setTimeout(function(){$("#status").addClass("st");},2000);
+            chk=0;
+            }
+            
+        }
+        
+        function hitServer(data)
+        {
+            s.send(data);
+        }
+    </script>
+</body>
+</html>
