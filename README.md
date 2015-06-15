@@ -120,4 +120,6 @@ sudo ./bin/storm ui
 
 where TopologyMain is the name of main class.
 
-#### Now we can monitor the submitted Topology by visting the UI URL ( http://`<IP ADDRESS of the machine running storm UI>:8080` )
+##### Now we can monitor the submitted Topology by visting the UI URL: <br/>
+
+http://`<IP ADDRESS of the machine running storm UI>:8080`
