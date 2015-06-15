@@ -74,31 +74,22 @@ _Supervisor has been set up successfully ..........at last_ :sweat_smile:
 
 ## Initializing Storm Components and Zookeeper
 
-1.  Start Zookeeper.
+*  Start Zookeeper.
      Navigate to the Zookeeper root directory on the zookeeper machine.
-
 ```
 sudo java -cp ./zookeeper-3.4.6.jar:./lib/slf4j-api-1.6.1.jar:./lib/slf4j-log4j12-1.6.1.jar:./lib/log4j-1.2.16.jar:conf  org.apache.zookeeper.server.quorum.QuorumPeerMain ./conf/zoo.cfg
-
 ```
-
-1.  Start Nimbus.
+*  Start Nimbus.
      Navigate to the Apache Storm root directory on the nimbus machine.
-
 ```
 sudo ./bin/storm nimbus
-
 ```
-
-1.  Start Supervisors/Slaves.
+*  Start Supervisors/Slaves.
      Navigate to the Apache Storm root directory on the supervisor/slave machine.
-
 ```
 sudo ./bin/storm supervisor
-
 ```
-
-1.  Start Storm web UI (to monitor the submitted topology).
+*  Start Storm web UI (to monitor the submitted topology).
      Navigate to the Apache Storm root directory on the nimbus or supervisor/slave machine.
 
 ```
