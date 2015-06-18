@@ -2,13 +2,14 @@ package bolts;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import org.json.simple.JSONObject;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseBasicBolt;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Fields;
+import backtype.storm.tuple.Values;
 
 
 //--------for lingpipe
@@ -36,18 +37,26 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_10;
+import org.java_websocket.handshake.ServerHandshake;
 
 
 
 
 public class WordCounter extends BaseBasicBolt {
-
+private static String data="";
 	Map myMap = new HashMap<String, String>();
     public WordCounter(){
+        
     	myMap.put("ABL", "pre-qualifier");
     	myMap.put("ABN", "pre-qun=antifier");
     	myMap.put("ABX", "pre-quantifier");
@@ -146,6 +155,7 @@ public class WordCounter extends BaseBasicBolt {
 
 	private static int max = 0;
 	private static String trendin = null;
+        
 	public static TokenizerFactory TOKENIZER_FACTORY = new RegExTokenizerFactory("(-|'|\\d|\\p{L})+|\\S");
 	Integer id;
 	String name;
@@ -166,14 +176,16 @@ public class WordCounter extends BaseBasicBolt {
 		this.counters = new HashMap<String, Integer>();
 		this.name = context.getThisComponentId();
 		this.id = context.getThisTaskId();
+               
+                
 	}
-
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {}
 
 
 	@Override
 	public void execute(Tuple input, BasicOutputCollector collector) {
+            data="";
 		String str = input.getString(0);
 
 		try{
@@ -190,11 +202,51 @@ public class WordCounter extends BaseBasicBolt {
             List<String> tokenList = Arrays.asList(tokens);
             Tagging<String> tagging = decoder.tag(tokenList);
         	for (int i = 0; i < tagging.size(); ++i){
-            	System.out.println(tagging.token(i) + '\t' + '\t' + myMap.get(tagging.tag(i).toUpperCase()));
+            	//data=data + ("\"" + tagging.token(i) + "\":\"" + myMap.get(tagging.tag(i).toUpperCase()) + "\",");
+                data=data + ("{\"token\":\"" + tagging.token(i) + "\", \"type\":\"" + myMap.get(tagging.tag(i).toUpperCase()) + "\"},");
             }
         }
         catch(Exception e){
         	System.out.println("Exception: " + e);
         }
+                 
+                 WebSocketClient mWs;
+            try {
+                mWs = new WebSocketClient( new URI( "ws://192.168.1.23:9999/said" ), new Draft_10() ){
+                    
+                    @Override
+                    public void onMessage( String message ) {
+                        
+                        
+                    }
+                    
+                    @Override
+                    public void onOpen( ServerHandshake handshake ) {
+                        System.out.println( "opened connection bolt" );
+                        data="[" + data + "]";
+                        this.send("{\"client\": \"bolt\",\"data\": \"" + JSONObject.escape(data) + "\"}");
+                    }
+                    
+                    @Override
+                    public void onClose( int code, String reason, boolean remote ) {
+                        System.out.println( "closed connection bolt" );
+                    }
+                    
+                    @Override
+                    public void onError( Exception ex ) {
+                        ex.printStackTrace();
+                        System.out.println("zzzzzzzzzzzzzzzz");
+                    }
+                };
+                System.out.println("xxxxxxxxxxxxxxxx");
+                mWs.connect();
+                System.out.println("yyyyyyyyyyyyyyyy");
+               
+                //mWs.close();
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(WordCounter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
+                
 	}
 }

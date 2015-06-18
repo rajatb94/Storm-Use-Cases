@@ -2,16 +2,68 @@
     <head>
         <link href='http://fonts.googleapis.com/css?family=Noto+Sans&subset=latin,devanagari' rel='stylesheet' type='text/css'>
         <script src="jquery.min.js"></script>
-        
+        <script src="js/Chart.js"></script>
+        <script type="text/javascript" src="js/d3.min.js"></script>
+              <script>
+        var counts = {};
+        var unq=[];
+        function makeIt(dataaa)
+        {
+            var dd=JSON.parse(dataaa);
+        $("#canvasCont").html("");
+$("#canvasCont").html('<canvas id="myChart" height="300px" width="300px" style="margin:auto">chart</canvas>');
+Chart.defaults.global.responsive = true;
+var ctx = document.getElementById("myChart").getContext("2d");
+var myLineChart = new Chart(ctx).Doughnut(dd,  {
+animateScale: true
+
+});
+}
+
+function calcChart(dataaa)
+{
+
+var words=[];
+                
+                var types=[];
+                var str="";
+                  
+for(var i=0;i<dataaa.length;i++)
+{
+words[i]=dataaa[i].token;
+types[i]=dataaa[i].type;
+str=str + words[i] + "  :  " + types[i] + "<br/>";
+    counts[types[i]] = counts[types[i]] ? counts[types[i]]+1 : 1;
+}
+unq=$.unique(unq.concat(types));
+var dtt="";
+for(var i=0;i<unq.length;i++)
+{
+
+dtt=dtt + '{"value": ' + counts[unq[i]] + ',"color":"' + color[i] + '","highlight": "#FF5A5E","label": "' + unq[i] +'"},';
+
+}
+
+dtt='[' + dtt + ']';
+dtt=dtt.replace(",]" , "]");
+
+makeIt(dtt);
+                $("#stormD").append(str + "<hr/>");
+
+}
+        </script>
          <script type="text/javascript">
+         var color = ["#60AFFE", "#ffca3a", "#a8a4a4", "#66cdaa", "#ff4444","#ffc3a0","#daa536","#e61f44","#e7846f","#cdb0f2","#509ddd","#5ca36a","#e65d1f"];
             var host = "ws://192.168.1.23:9999/said";
+            var dataa;
 			console.log("Host:", host);
 			
 			var s = new WebSocket(host);
 			
 			s.onopen = function (e) {
 				console.log("Socket opened.");
-                
+                //hitServer("hello How are u");
+              
 			};
 			
 			s.onclose = function (e) {
@@ -20,6 +72,10 @@
 			
 			s.onmessage = function (e) {
 				
+                 
+                var dt=JSON.parse(e.data.replace(",]", "]"));
+                //alert(e.data.replace(",]", "]"));
+              calcChart(dt);
 			};
 			
 			s.onerror = function (e) {
@@ -28,7 +84,7 @@
          
           
       </script>
-        
+      
     <style>
     
     #cont
@@ -36,10 +92,12 @@
        font-size: 20px;
             box-shadow: black 0px 0px 10px 0px;
             font-family: 'Noto Sans', sans-serif;
-            padding: 20px;
+            padding: 2%;
             color: white;
+            margin: auto;
+            width:80%;
+            height: 40%;
             margin-top: 20px;
-            min-height: 400px;
             text-align: left;
             background-color: rgb(78, 157, 160);
             border-radius: 30px;
@@ -52,11 +110,11 @@
              
             
             border-radius: 35px;
-            animation: rec 1s infinite;
+            
         }
         .st
         {
-             box-shadow: none;
+             box-shadow: white 0px 0px 0px 0px;
         transition: all 0.5s;
         }
         .st:hover
@@ -93,11 +151,38 @@
         #supcont
         {
         position:absolute;
-            width: 50%;
-            height: 50%;
+            width: 100%;
+            height: 80%;
             text-align: center;
-            top: 15%;
-            left: 25%;
+            top: 5%;
+            left: 0%;
+        }
+        #stormD
+        {
+            font-size: 20px;
+            
+            font-family: 'Noto Sans', sans-serif;
+            padding: 2%;
+            color: white;
+            margin:auto;
+            margin-top: 20px;
+            min-height: 40%;
+            width:80%;
+            text-align: left;
+            background-color: rgb(98, 98, 98);
+            border-radius: 30px;
+        }
+        #supcont table
+        {
+            width: 100%;
+            height: 100%;
+        }
+        #supcont table td
+        {
+            text-align: center;
+            vertical-align: top;
+width:50%;
+height: 100%;
         }
         </style>    
     </head>
@@ -105,13 +190,26 @@
     
     
     <div id="supcont">
-        <img id="status" src="record.png" class="st" onClick="doIt()"/>
         
-<div id="cont"><span id="final"></span><span id="intrim" style="font-size: 14px; color: #e0dede; height: 27px; padding-top: 3px;"></span></div>  
+        <table>
+        <tr>
+        <td>
+        <img id="status" src="record.png" class="st" onClick="doIt()"/>
+<div id="cont"><span id="final"></span><span id="intrim" style="font-size: 14px; color: #e0dede; height: 27px; padding-top: 3px;"></span></div> 
+<div id="stormD"></div> 
+</td>
+<td>
+<div id="canvasCont" style="test-align: center; width:60%; margin:auto; margin-top: 90px;"></div>
+</td>
+</tr>
+        </table>
+        
         </div>
+        
+        
     
     <script>
-        var final=document.getElementById("final");
+ var fina=document.getElementById("final");
         var intrim=document.getElementById("intrim");
         var final_transcript="";
         var chk=0;
@@ -139,10 +237,9 @@ recognition.onresult = function (e) {
         }
     intrim.innerHTML = format(capitalize(interim_transcript));
     var fnl=format(capitalize(final_transcript));
-        final.innerHTML = fnl;
+        fina.innerHTML = fnl;
    
     }
-
 function format(s) {
     return s.replace(/\n/g, '<br>');
 }
@@ -159,8 +256,8 @@ recognition.start();
             //$("#status").css("box-shadow","none");
             $("#status").addClass("animRec");
              $("#status").removeClass("st");
-            
-        chk=1;
+            chk=1;
+       
         }
             else
             {
@@ -168,15 +265,18 @@ recognition.start();
                 $("#status").removeClass("animRec");
                 
                 setTimeout(function(){$("#status").addClass("st");},2000);
-            chk=0;
+           chk=0;
             }
             
         }
         
         function hitServer(data)
         {
-            s.send(data);
+            s.send('{"client": "web","data": "' +  data +  '"}');
+                   
         }
+
     </script>
+
 </body>
 </html>

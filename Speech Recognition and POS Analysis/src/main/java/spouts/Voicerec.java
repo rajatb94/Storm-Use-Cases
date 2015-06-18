@@ -68,7 +68,7 @@ public class Voicerec extends BaseRichSpout{
                 
                 @Override
                 public void onOpen( ServerHandshake handshake ) {
-                    System.out.println( "opened connection" );
+                    System.out.println( "opened connection spout" );
                 }
                 
                 @Override
