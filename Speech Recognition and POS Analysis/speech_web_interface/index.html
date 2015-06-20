@@ -11,11 +11,14 @@
         {
             var dd=JSON.parse(dataaa);
         $("#canvasCont").html("");
-$("#canvasCont").html('<canvas id="myChart" height="300px" width="300px" style="margin:auto">chart</canvas>');
+$("#canvasCont").html('<canvas id="myChart" height="100px" width="100px" style="margin:auto">chart</canvas>');
 Chart.defaults.global.responsive = true;
 var ctx = document.getElementById("myChart").getContext("2d");
 var myLineChart = new Chart(ctx).Doughnut(dd,  {
-animateScale: true
+animateScale: true,
+     segmentShowStroke : true,
+     segmentStrokeColor : "#FFB84D",
+    segmentStrokeWidth : 1
 
 });
 }
@@ -40,7 +43,7 @@ var dtt="";
 for(var i=0;i<unq.length;i++)
 {
 
-dtt=dtt + '{"value": ' + counts[unq[i]] + ',"color":"' + color[i] + '","highlight": "#FF5A5E","label": "' + unq[i] +'"},';
+dtt=dtt + '{"value": ' + counts[unq[i]] + ',"color":"rgb(0,0,' + Math.floor( ( (i+1) * (255/unq.length)  ))  + ')","highlight": "white","label": "' + unq[i] +'"},';
 
 }
 
@@ -48,13 +51,14 @@ dtt='[' + dtt + ']';
 dtt=dtt.replace(",]" , "]");
 
 makeIt(dtt);
-                $("#stormD").append(str + "<hr/>");
+                $("#ro").append(str + "<hr/>");
+    
 
 }
         </script>
          <script type="text/javascript">
-         var color = ["#60AFFE", "#ffca3a", "#a8a4a4", "#66cdaa", "#ff4444","#ffc3a0","#daa536","#e61f44","#e7846f","#cdb0f2","#509ddd","#5ca36a","#e65d1f"];
-            var host = "ws://192.168.1.23:9999/said";
+            //var host = "ws://192.168.1.23:9999/said";http://183.82.4.63/
+             var host = "ws://183.82.4.63:9999/said";
             var dataa;
 			console.log("Host:", host);
 			
@@ -62,7 +66,7 @@ makeIt(dtt);
 			
 			s.onopen = function (e) {
 				console.log("Socket opened.");
-                //hitServer("hello How are u");
+              //hitServer("hello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are u");
               
 			};
 			
@@ -76,6 +80,11 @@ makeIt(dtt);
                 var dt=JSON.parse(e.data.replace(",]", "]"));
                 //alert(e.data.replace(",]", "]"));
               calcChart(dt);
+                $("#supcont").animate({top: "5%"},300,function(){ 
+                    $("#results").css("display","block");
+                    $("#results").animate({opacity: "1"},1000);
+                });
+               
 			};
 			
 			s.onerror = function (e) {
@@ -86,21 +95,29 @@ makeIt(dtt);
       </script>
       
     <style>
-    
+    body
+        {
+        background-image: url("back.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            overflow: hidden;
+        }
     #cont
         {
        font-size: 20px;
             box-shadow: black 0px 0px 10px 0px;
             font-family: 'Noto Sans', sans-serif;
-            padding: 2%;
-            color: white;
+             padding-top:1%;
+            padding-bottom:1%;
+            color: black;
             margin: auto;
-            width:80%;
-            height: 40%;
+            width:76%;
+            min-height: 8%;
             margin-top: 20px;
             text-align: left;
-            background-color: rgb(78, 157, 160);
+            background-color: rgba(255, 255, 255, 0.75);
             border-radius: 30px;
+             padding: 2%;
         }
         #status
         {
@@ -154,36 +171,91 @@ makeIt(dtt);
             width: 100%;
             height: 80%;
             text-align: center;
-            top: 5%;
+            top: 30%;
             left: 0%;
         }
         #stormD
         {
             font-size: 20px;
-            
             font-family: 'Noto Sans', sans-serif;
-            padding: 2%;
+            float: left;
             color: white;
             margin:auto;
-            margin-top: 20px;
-            min-height: 40%;
-            width:80%;
-            text-align: left;
-            background-color: rgb(98, 98, 98);
-            border-radius: 30px;
-        }
-        #supcont table
-        {
-            width: 100%;
+            margin-top: 2%;
             height: 100%;
+            width:48%;
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 30px;
+    padding-right: 0px;
+            overflow-y:hidden; 
+            
+           
+            
+            
         }
-        #supcont table td
+        #stormD:hover
         {
-            text-align: center;
-            vertical-align: top;
-width:50%;
-height: 100%;
+            overflow-y:auto;
         }
+       
+        #mT
+        {
+        height: 100%;
+            width: 100%;
+        }
+        #results
+        {
+        height: 60%;
+            opacity:0;
+            
+            width: 80%;
+            margin: auto;
+           
+        }
+        #results td
+        {
+        text-align: left;
+        }
+        #final
+        {
+        
+            word-wrap: break-word;
+        }
+        #ro
+        {
+        padding: 5%;
+        }
+        .force-overflow
+{
+	min-height: 450px;
+}
+       #stormD::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: transparent;
+}
+
+#stormD::-webkit-scrollbar
+{
+	width: 12px;
+    height: 50px;
+    padding-top: 50px;
+    border-radius: 10px;
+	background-color: transparent;
+}
+
+#stormD::-webkit-scrollbar-thumb:vertical
+{
+	border-radius: 10px;
+    background:transparent url('circle.png') no-repeat;
+    background-size:10px 10px;  
+    background-position: 50%;
+    display: block;
+    width: 30px;
+    height: 100px;
+}
+
         </style>    
     </head>
 <body style="background-color: #c9c9c9;">
@@ -191,18 +263,25 @@ height: 100%;
     
     <div id="supcont">
         
-        <table>
-        <tr>
-        <td>
+
         <img id="status" src="record.png" class="st" onClick="doIt()"/>
-<div id="cont"><span id="final"></span><span id="intrim" style="font-size: 14px; color: #e0dede; height: 27px; padding-top: 3px;"></span></div> 
-<div id="stormD"></div> 
-</td>
-<td>
-<div id="canvasCont" style="test-align: center; width:60%; margin:auto; margin-top: 90px;"></div>
-</td>
-</tr>
-        </table>
+<div id="cont"><span id="final"></span><span id="intrim" style="font-size: 14px; color: grey; height: 27px; padding-top: 3px;"></span></div> 
+ 
+
+                <div id="results">
+                    
+                <div id="stormD" class="scrollbar">
+                    <div id="ro"></div>
+                  
+                     
+                    </div>
+
+<div style="test-align: center; width:48%; height: 100%; margin-top: 2%; float: right; "><div id="canvasCont" style="test-align: center; width:60%; margin:auto; margin-top:2%;"></div></div>
+
+                        
+                    </div>
+                
+        
         
         </div>
         
