@@ -17,7 +17,7 @@ var ctx = document.getElementById("myChart").getContext("2d");
 var myLineChart = new Chart(ctx).Doughnut(dd,  {
 animateScale: true,
      segmentShowStroke : true,
-     segmentStrokeColor : "#FFB84D",
+     segmentStrokeColor : "#3399FF",
     segmentStrokeWidth : 1
 
 });
@@ -35,7 +35,7 @@ for(var i=0;i<dataaa.length;i++)
 {
 words[i]=dataaa[i].token;
 types[i]=dataaa[i].type;
-str=str + words[i] + "  :  " + types[i] + "<br/>";
+str=str + words[i] + "  :  <span style='font-size:14px; margin-left:20px; color: rgb(176,167,161)'>" + types[i] + "</span><br/>";
     counts[types[i]] = counts[types[i]] ? counts[types[i]]+1 : 1;
 }
 unq=$.unique(unq.concat(types));
@@ -58,7 +58,7 @@ makeIt(dtt);
         </script>
          <script type="text/javascript">
             var host = "ws://192.168.1.23:9999/said";http://183.82.4.63/
-            // var host = "ws://183.82.4.63:9999/said";
+             //var host = "ws://183.82.4.63:9999/said";
             var dataa;
 			console.log("Host:", host);
 			
@@ -66,7 +66,7 @@ makeIt(dtt);
 			
 			s.onopen = function (e) {
 				console.log("Socket opened.");
-              //hitServer("hello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are u");
+             // hitServer("hello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are uhello How are u");
               
 			};
 			
@@ -271,6 +271,7 @@ makeIt(dtt);
                 <div id="results">
                     
                 <div id="stormD" class="scrollbar">
+                    <h3 style="text-align:center">Parts of Speech</h3>
                     <div id="ro"></div>
                   
                      
@@ -307,8 +308,11 @@ recognition.onresult = function (e) {
         for (var i = e.resultIndex; i < e.results.length; ++i) {
             var val = e.results[i][0].transcript;
             if (e.results[i].isFinal) {
+                if(val.trim() != "")
+                {
                 hitServer(val.trim());
                 final_transcript += " " + val;
+                }
             } else {
                 interim_transcript += " " + val;
                 
