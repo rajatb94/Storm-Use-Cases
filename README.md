@@ -36,8 +36,8 @@ _Nimbus has been set up successfully ..........well done_ :thumbsup:
 
 * Install Apache Storm on another machine.
 ```bash
-wget http://apache.mirrors.ionfish.org/storm/apache-storm-0.9.5/apache-storm-0.9.5.tar.gz
-tar -xvzf apache-storm-0.9.5.tar.gz
+wget https://github.com/apache/storm/archive/v0.9.6.tar.gz
+tar -xvzf v0.9.6.tar.gz
 ```
 * Edit the **storm.yaml** under the conf directory inside apache-storm-0.9.5 folder
 ```bash
