@@ -11,7 +11,7 @@ sudo apt-get install python
 
 * Install Zookeeper on one of the available machines.
 ```bash
-wget http://apache.mirrors.ionfish.org/zookeeper/stable/zookeeper-3.4.6.tar.gz
+wget http://www.eu.apache.org/dist/zookeeper/stable/zookeeper-3.4.6.tar.gz
 tar -xvzf zookeeper-3.4.6.tar.gz
 ```
 * Make a new file **zoo.cfg** (configuration file) under the conf directory inside the zookeeper-3.4.6 folder.
@@ -21,8 +21,8 @@ _Zookeeper has been set up successfully ..........yesssss_ :stuck_out_tongue_win
 
 * Install Apache Storm on another machine.
 ```bash
-wget http://apache.mirrors.ionfish.org/storm/apache-storm-0.9.5/apache-storm-0.9.5.tar.gz
-tar -xvzf apache-storm-0.9.5.tar.gz
+wget https://github.com/apache/storm/archive/v0.9.6.tar.gz
+tar -xvzf v0.9.6.tar.gz
 ```
 * Edit the **storm.yaml** under the conf directory inside apache-storm-0.9.5 folder
 ```bash
