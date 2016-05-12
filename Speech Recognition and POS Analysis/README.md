@@ -4,7 +4,7 @@
 
 * Install **Apache Maven** on the client machine.
 ```bash
-sudo apt-get maven
+sudo apt-get install maven
 ```
 * Build project using **maven**
 ```bash
